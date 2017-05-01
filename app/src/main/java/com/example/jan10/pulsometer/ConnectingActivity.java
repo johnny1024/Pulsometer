@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -30,6 +31,10 @@ public class ConnectingActivity extends AppCompatActivity {
     private BluetoothSocket socket;
     private final UUID myUUID;
 
+    public ConnectingActivity() {
+        myUUID = UUID.randomUUID();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,13 +48,21 @@ public class ConnectingActivity extends AppCompatActivity {
         listView.setClickable(true);
 
         // CONNECTING
-        listView.setOnClickListener(new AdapterView.OnItemClickListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?>adapter, View view, int position, long id) {
                 BluetoothDevice device = devices.get(position);
 
-                socket = device.createInsecureRfcommSocketToServiceRecord(myUUID);
-                socket.connect();
+                try {
+                    socket = device.createInsecureRfcommSocketToServiceRecord(myUUID);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    socket.connect();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
         // END OF CONNECTING
