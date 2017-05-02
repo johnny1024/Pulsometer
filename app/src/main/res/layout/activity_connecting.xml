@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/button2"
             android:layout_alignParentBottom="true" android:layout_centerHorizontal="true"
-            android:visibility="visible" android:onClick="refresh (ConnectingActivity)"/>
+            android:visibility="visible" android:onClick="refresh"/>
     <ListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
