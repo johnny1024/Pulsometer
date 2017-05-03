@@ -1,5 +1,6 @@
 package com.example.jan10.pulsometer;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -18,7 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class ConnectingActivity extends AppCompatActivity {
+public class ConnectingActivity extends Activity {
 
     // SETUP, STARTING BT, ETC
 

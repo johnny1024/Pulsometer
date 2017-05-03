@@ -1,11 +1,12 @@
 package com.example.jan10.pulsometer;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-public class ConnectActivity extends AppCompatActivity {
+public class ConnectActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
