@@ -8,12 +8,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ public class ConnectingActivity extends Activity {
     private final UUID myUUID;
 
     public ConnectingActivity() {
-        myUUID = UUID.randomUUID();
+        myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     }
 
     @Override
@@ -60,8 +60,13 @@ public class ConnectingActivity extends Activity {
                     e.printStackTrace();
                 }
                 try {
+                    Toast.makeText(ConnectingActivity.this, "Trying to connect", Toast.LENGTH_LONG).show();
                     socket.connect();
+                    BluetoothSocketHandler.setSocket(socket);
+                    Intent goToPulseIntent = new Intent(ConnectingActivity.this, PulseActivity.class);
+                    startActivity(goToPulseIntent);
                 } catch (IOException e) {
+                    Toast.makeText(ConnectingActivity.this, "Failed to connect", Toast.LENGTH_LONG).show();
                     e.printStackTrace();
                 }
             }
@@ -92,7 +97,8 @@ public class ConnectingActivity extends Activity {
     // SEARCHING FOR DEVICES
 
     private void discover() {
-        devices = (ArrayList)mBluetoothAdapter.getBondedDevices();
+        devices = new ArrayList<>();
+        devices.addAll(mBluetoothAdapter.getBondedDevices());
 
         if (devices.size() > 0) {
             // There are paired devices. Get the name and address of each paired device.
@@ -100,7 +106,7 @@ public class ConnectingActivity extends Activity {
                 String deviceName = device.getName();
                 //String deviceHardwareAddress = device.getAddress(); // MAC address
                 adapter.add(deviceName);
-                devices.add(device);
+//                devices.add(device);
             }
         }
     }
