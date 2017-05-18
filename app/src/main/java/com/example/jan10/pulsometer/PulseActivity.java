@@ -15,11 +15,11 @@ import java.io.IOException;
 
 public class PulseActivity extends Activity {
 
-    private final Handler mHandler = new Handler();
-    private Runnable mTimer2;
-    private LineGraphSeries<DataPoint> mSeries2;
-    private double graph2LastXValue = 5d;
-
+    private final Handler handler = new Handler();
+    private Runnable graphUpdater;
+    private LineGraphSeries<DataPoint> graphData;
+    private double graphLastX = 5d;
+    private IncrementalMean buffer;
     private TextView textView;
 
     private Thread bluetoothThread = new Thread() {
@@ -47,8 +47,7 @@ public class PulseActivity extends Activity {
                         @Override
                         public void run() {
                             textView.setText(String.valueOf(bpm));
-                            graph2LastXValue += 1d;
-                            mSeries2.appendData(new DataPoint(graph2LastXValue, (double) bpm), true, 40);
+                            buffer.addValue((double) bpm);
                         }
                     });
                     System.out.println(threadName + " [" + counter + "]\t" + bpm);
@@ -74,13 +73,14 @@ public class PulseActivity extends Activity {
         setContentView(R.layout.activity_pulse);
 
         textView = (TextView)findViewById(R.id.textView);
+        buffer = new IncrementalMean();
 
-        GraphView graph2 = (GraphView) findViewById(R.id.graph2);
-        mSeries2 = new LineGraphSeries<>();
-        graph2.addSeries(mSeries2);
-        graph2.getViewport().setXAxisBoundsManual(true);
-        graph2.getViewport().setMinX(0);
-        graph2.getViewport().setMaxX(40);
+        GraphView graph = (GraphView) findViewById(R.id.graph2);
+        graphData = new LineGraphSeries<>();
+        graph.addSeries(graphData);
+        graph.getViewport().setXAxisBoundsManual(true);
+        graph.getViewport().setMinX(0);
+        graph.getViewport().setMaxX(40);
         bluetoothThread.start();
     }
 
@@ -99,22 +99,21 @@ public class PulseActivity extends Activity {
     protected void onResume() {
         super.onResume();
 
-        mTimer2 = new Runnable() {
+        graphUpdater = new Runnable() {
             @Override
             public void run() {
-//                graph2LastXValue += 1d;
-//                mSeries2.appendData(new DataPoint(graph2LastXValue, getRandom()), true, 40);
-//                mHandler.postDelayed(this, 200);
+                graphLastX += 1d;
+                graphData.appendData(new DataPoint(graphLastX, buffer.getMean()), true, 40);
+                buffer.clear();
+                handler.postDelayed(this, 1000);
             }
         };
-        mHandler.postDelayed(mTimer2, 1000);
+        handler.postDelayed(graphUpdater, 1000);
     }
 
     @Override
     protected void onPause() {
-//        mHandler.removeCallbacks(mTimer1);
-//        bluetoothThread.interrupt();
-        mHandler.removeCallbacks(mTimer2);
+        handler.removeCallbacks(graphUpdater);
         super.onPause();
     }
 }
