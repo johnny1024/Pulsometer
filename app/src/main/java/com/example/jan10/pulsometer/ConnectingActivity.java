@@ -40,6 +40,7 @@ public class ConnectingActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connecting);
+        this.setTitle("Choose a bluetooth device");
 
         listView = (ListView)findViewById(R.id.list);
         deviceNames = new ArrayList<>();
