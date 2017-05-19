@@ -16,24 +16,28 @@
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical" android:weightSum="1">
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView" android:textSize="24sp"/>
 
         <com.jjoe64.graphview.GraphView
                 android:layout_width="match_parent"
                 android:layout_height="200dip"
-                android:id="@+id/graph" />
-
-        <com.jjoe64.graphview.GraphView
+                android:id="@+id/graph" android:layout_weight="0.42"/>
+        <Space
                 android:layout_width="match_parent"
-                android:layout_height="200dip"
-                android:id="@+id/graph2" />
+                android:layout_height="wrap_content" android:layout_weight="0.25"/>
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:id="@+id/textViewPulseInfo" android:layout_weight="0.28"
+                android:textSize="22sp"/>
 
     </LinearLayout>
-
-    <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView" android:textSize="36sp"/>
 
 
 </RelativeLayout>

@@ -2,6 +2,7 @@ package com.example.jan10.pulsometer;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothSocket;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.TextView;
@@ -20,7 +21,8 @@ public class PulseActivity extends Activity {
     private LineGraphSeries<DataPoint> graphData;
     private double graphLastX = 5d;
     private IncrementalMean buffer;
-    private TextView textView;
+    private TextView pulseValue;
+    private TextView pulseInfo;
 
     private Thread bluetoothThread = new Thread() {
         @Override
@@ -46,7 +48,7 @@ public class PulseActivity extends Activity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            textView.setText(String.valueOf(bpm));
+                            pulseValue.setText("Aktualny odczyt czujnika: " + bpm);
                             buffer.addValue((double) bpm);
                         }
                     });
@@ -67,15 +69,37 @@ public class PulseActivity extends Activity {
         }
     };
 
+    private String getPulseInfo(double bpm) {
+        String pulseMessage;
+        if (bpm < 45) {
+            pulseMessage = "Stanowczo zbyt niski puls!";
+            pulseInfo.setTextColor(Color.RED);
+        } else if (bpm < 60) {
+            pulseMessage = "Niski puls";
+            pulseInfo.setTextColor(Color.YELLOW);
+        } else if (bpm < 85) {
+            pulseMessage = "Normalny puls";
+            pulseInfo.setTextColor(Color.GREEN);
+        } else if (bpm < 100) {
+            pulseMessage = "Wysoki puls";
+            pulseInfo.setTextColor(Color.YELLOW);
+        } else {
+            pulseMessage = "Stanowczo zbyt wysoki puls!";
+            pulseInfo.setTextColor(Color.RED);
+        }
+        return pulseMessage;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pulse);
 
-        textView = (TextView)findViewById(R.id.textView);
+        pulseValue = (TextView)findViewById(R.id.textView);
+        pulseInfo = (TextView)findViewById(R.id.textViewPulseInfo);
         buffer = new IncrementalMean();
 
-        GraphView graph = (GraphView) findViewById(R.id.graph2);
+        GraphView graph = (GraphView) findViewById(R.id.graph);
         graphData = new LineGraphSeries<>();
         graph.addSeries(graphData);
         graph.getViewport().setXAxisBoundsManual(true);
@@ -103,8 +127,10 @@ public class PulseActivity extends Activity {
             @Override
             public void run() {
                 graphLastX += 1d;
-                graphData.appendData(new DataPoint(graphLastX, buffer.getMean()), true, 40);
+                final double avgBpm = buffer.getMean();
+                graphData.appendData(new DataPoint(graphLastX, avgBpm), true, 40);
                 buffer.clear();
+                pulseInfo.setText(getPulseInfo(avgBpm));
                 handler.postDelayed(this, 1000);
             }
         };
