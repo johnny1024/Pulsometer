@@ -48,7 +48,7 @@ public class PulseActivity extends Activity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            pulseValue.setText("Aktualny odczyt czujnika: " + bpm);
+                            pulseValue.setText("Current sensor reading: " + bpm);
                             buffer.addValue((double) bpm);
                         }
                     });
@@ -72,19 +72,19 @@ public class PulseActivity extends Activity {
     private String getPulseInfo(double bpm) {
         String pulseMessage;
         if (bpm < 45) {
-            pulseMessage = "Stanowczo zbyt niski puls!";
+            pulseMessage = "Pulse way too low!";
             pulseInfo.setTextColor(Color.RED);
         } else if (bpm < 60) {
-            pulseMessage = "Niski puls";
+            pulseMessage = "Low pulse";
             pulseInfo.setTextColor(Color.YELLOW);
         } else if (bpm < 85) {
-            pulseMessage = "Normalny puls";
+            pulseMessage = "Normal pulse";
             pulseInfo.setTextColor(Color.GREEN);
-        } else if (bpm < 100) {
-            pulseMessage = "Wysoki puls";
+        } else if (bpm < 110) {
+            pulseMessage = "High pulse";
             pulseInfo.setTextColor(Color.YELLOW);
         } else {
-            pulseMessage = "Stanowczo zbyt wysoki puls!";
+            pulseMessage = "Pulse way too high!";
             pulseInfo.setTextColor(Color.RED);
         }
         return pulseMessage;
